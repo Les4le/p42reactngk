@@ -1,0 +1,28 @@
+.reg-form-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.policyTextLink {
+  text-decoration: none;
+  color: rgb(95, 139, 196);
+  font-weight: bold;
+}
+
+.policyLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  width: 265px;
+  /* height: 500px; */
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  box-shadow: 0 0 6px lightgray;
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.policyTextLink:hover {
+  color: rgb(0, 115, 255);
+}

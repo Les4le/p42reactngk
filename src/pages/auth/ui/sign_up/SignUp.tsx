@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import "./SignUp.css";
 
@@ -27,6 +27,50 @@ const emailFeedback = "Адреса е-пошти повинна містити 
 export default function SignUp() {
   const [formData, setFormData] = useState<IFormData>(initialFormData);
 
+  const [errors, setErrors] = useState({
+    login: "",
+    email: "",
+    password: "",
+    repeat: "",
+  });
+
+  const validate = () => {
+    const newErrors = {
+      login: "",
+      email: "",
+      password: "",
+      repeat: "",
+    };
+
+    if (formData.login.trim().length < 2) {
+      newErrors.login = "Логін повинен містити мінімум 2 символи";
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Некоректна пошта";
+    }
+
+    if (formData.password.length < 8) {
+      newErrors.password = "Пароль повинен містити мінімум 8 символів";
+    } else {
+      if (!/[A-Za-z]/.test(formData.password)) {
+        newErrors.password = "Пароль повинен містити літери";
+      }
+
+      if (!/\d/.test(formData.password)) {
+        newErrors.password = "Пароль повинен містити цифри";
+      }
+    }
+
+    if (formData.password !== formData.repeat) {
+      newErrors.repeat = "Паролі не співпадають";
+    }
+
+    setErrors(newErrors);
+
+    return Object.values(newErrors).every((v) => v === "");
+  };
+
   const valids = {
     email: isEmailValid(formData.email),
   };
@@ -37,6 +81,18 @@ export default function SignUp() {
     valids.email &&
     formData.password == formData.repeat &&
     formData.isAgree;
+
+  const registerClick = () => {
+    if (!validate()) return;
+
+    console.log(formData);
+
+    // регистрация
+  };
+
+  useEffect(() => {
+    validate();
+  }, [formData.login, formData.email, formData.password, formData.repeat]);
 
   return (
     <div className="reg-form-content mx-3 my-4">
@@ -60,6 +116,10 @@ export default function SignUp() {
           aria-label="User E-mail"
           aria-describedby="email-addon"
         />
+        {errors.email && (
+          <div className="text-danger small mt-1">{errors.email}</div>
+        )}
+
         <div className="invalid-feedback">{emailFeedback}</div>
       </div>
       <div className="input-group mb-3">
@@ -75,6 +135,9 @@ export default function SignUp() {
           aria-label="Username"
           aria-describedby="login-addon"
         />
+        {errors.login && (
+          <div className="text-danger small mt-1">{errors.login}</div>
+        )}
       </div>
       <div className="input-group mb-3">
         <span className="input-group-text" id="password-addon">
@@ -91,6 +154,9 @@ export default function SignUp() {
           aria-label="Password"
           aria-describedby="password-addon"
         />
+        {errors.password && (
+          <div className="text-danger small mt-1">{errors.password}</div>
+        )}
       </div>
       <div className="input-group mb-3">
         <span className="input-group-text" id="repeat-addon">
@@ -105,6 +171,9 @@ export default function SignUp() {
           aria-label="Repeat Password"
           aria-describedby="repeat-addon"
         />
+        {errors.repeat && (
+          <div className="text-danger small mt-1">{errors.repeat}</div>
+        )}
       </div>
       <div className="input-group mb-3">
         <div className="input-group-text">
@@ -131,6 +200,8 @@ export default function SignUp() {
         </Link>
       </div>
       <button
+        onClick={registerClick}
+        disabled={!isFormValid || !Object.values(errors).every((v) => v === "")}
         className={`btn ${isFormValid ? "btn-primary" : "btn-secondary"}`}
       >
         Реєстрація

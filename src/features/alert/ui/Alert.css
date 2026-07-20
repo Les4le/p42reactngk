@@ -1,18 +1,50 @@
 .alert-bg {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: #777777a7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  z-index: 999;
+
+  animation: fade 0.2s;
 }
+
 .alert-fg {
-    background-color: #fcfcfc;
-    width: 33vw;
-    min-width: 300px;
-    height: 40vh;
-    min-height: 300px;
+  width: 360px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  padding: 24px;
+
+  text-align: center;
+}
+
+.alert-title {
+  margin-bottom: 15px;
+
+  color: #0d6efd;
+}
+
+.alert-message {
+  margin-bottom: 25px;
+
+  color: #444;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

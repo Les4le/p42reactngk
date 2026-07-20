@@ -44,18 +44,33 @@ export default function Auth() {
             Реєстрація
           </button>
         </div>
-        {pageMode == PageModes.signIn ? <SignIn /> : <SignUp />}
+        <div className="text-center mt-3">
+          <button
+            className="btn btn-link p-0"
+            onClick={() => setPageMode(PageModes.forgotPassword)}
+          >
+            Забули пароль?
+          </button>
+        </div>
+        {pageMode === PageModes.signIn && <SignIn />}
+
+        {pageMode === PageModes.signUp && <SignUp />}
+
+        {pageMode === PageModes.forgotPassword && (
+          <ForgotPassword onBack={() => setPageMode(PageModes.signIn)} />
+        )}
       </div>
     </div>
   );
 }
 
 function SignIn() {
-  const [login, setLogin] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [isFormValid, setFormValid] = useState<boolean>(false);
-  const { setUser } = useContext(AppContext);
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [isFormValid, setFormValid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const { setUser } = useContext(AppContext);
   useEffect(() => {
     setFormValid(
       login.length > 2 && // Валідація
@@ -64,17 +79,24 @@ function SignIn() {
   }, [login, password]);
 
   const signInClick = () => {
+    setLoading(true);
+
     UserApi.authenticate(login, password)
+
       .then((u) => {
-        // if(rememberMe)
-        // забезпечуємо збереження даних користувача у постійному сховищі браузера
         rememberUser(u);
+
         setUser(u);
       })
+
       .catch((err) => {
         if (err === 401) {
           alert("У вході відмовлено. Перевірьте введені дані");
         }
+      })
+
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -110,10 +132,67 @@ function SignIn() {
       </div>
 
       <button
+        disabled={!isFormValid || loading}
         className={`btn ${isFormValid ? "btn-primary" : "btn-secondary"}`}
         onClick={isFormValid ? signInClick : undefined}
       >
-        Вхід
+        {loading ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2"></span>
+            Вхід...
+          </>
+        ) : (
+          "Вхід"
+        )}
+      </button>
+    </div>
+  );
+}
+
+function ForgotPassword({ onBack }: { onBack: () => void }) {
+  const [email, setEmail] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+
+  const isValid = email.trim() !== "" && birthDate !== "";
+
+  return (
+    <div className="auth-form-content mx-3 my-4">
+      <div className="input-group mb-3">
+        <span className="input-group-text">
+          <i className="bi bi-envelope"></i>
+        </span>
+
+        <input
+          type="email"
+          className="form-control"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <div className="input-group mb-4">
+        <span className="input-group-text">
+          <i className="bi bi-calendar"></i>
+        </span>
+
+        <input
+          type="date"
+          className="form-control"
+          value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)}
+        />
+      </div>
+
+      <button
+        disabled={!isValid}
+        className={`btn ${isValid ? "btn-primary" : "btn-secondary"}`}
+      >
+        Відновити пароль
+      </button>
+
+      <button className="btn btn-link mt-3" onClick={onBack}>
+        Назад
       </button>
     </div>
   );

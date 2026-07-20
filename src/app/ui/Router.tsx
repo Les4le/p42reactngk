@@ -5,18 +5,21 @@ import Auth from "../../pages/auth/Auth";
 import Cart from "../../pages/cart/Cart";
 import Group from "../../pages/group/Group";
 import NotFound from "../../pages/not_found/NotFound";
+import Privacy from "../../pages/privacy/Privacy";
 
 export default function Router() {
-    return <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Layout />} >
-                <Route index element={<Home />} />
-                <Route path="auth" element={<Auth />} />
-                <Route path="cart" element={<Cart />} />
-                <Route path="group/:slug" element={<Group />} />
-
-                <Route path='*' element={<NotFound />} />
-            </Route>
-        </Routes>
-    </BrowserRouter>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="auth" element={<Auth />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="group/:slug" element={<Group />} />
+          <Route path="privacy" element={<Privacy />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }

@@ -126,10 +126,7 @@ export default function SignUp() {
         />
       </div>
       <div className="policyLink">
-        <Link
-          to={"/src/pages/auth/ui/sign_up/policy/"}
-          className="policyTextLink"
-        >
+        <Link to="/privacy" className="policyTextLink">
           Політика конфіденціальності
         </Link>
       </div>
